@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "outDir": "dist",
+        "target": "ES2022",
+        "noEmitOnError": true,
+        "strict": true
+    },
+    // "files": [
+        // "src/script.ts",
+    // ],
+    "include": [
+        "src/**.ts"
+    ]
+}
