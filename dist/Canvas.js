@@ -1,8 +1,10 @@
-export class Canvas {
+import { Settings } from "./Settings.js";
+export class Canvas extends Settings {
     parent;
     canvas = document.createElement("canvas");
     ctx = this.canvas.getContext("2d");
     constructor(parent = document.body) {
+        super();
         this.parent = parent;
         parent.append(this.canvas);
         this.resize();

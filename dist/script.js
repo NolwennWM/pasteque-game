@@ -1,13 +1,9 @@
 import { Canvas } from "./Canvas.js";
 import { Circle } from "./Circle.js";
 class pasteque extends Canvas {
-    circleSizes = [5, 10, 20, 40, 60, 80];
     current = new Circle(0);
     circleList = [];
-    cursorPos = { x: 0, y: 40 };
-    maxSize = 3;
     lastLaunch = Date.now();
-    timeBetweenLaunch = 1000;
     start = false;
     constructor() {
         super();

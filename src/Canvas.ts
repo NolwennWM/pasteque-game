@@ -1,10 +1,13 @@
-export abstract class Canvas
+import { Settings } from "./Settings.js";
+
+export abstract class Canvas extends Settings
 {
     protected canvas = document.createElement("canvas");
     protected ctx = this.canvas.getContext("2d")!;
 
     constructor(protected parent = document.body)
     {
+        super();
         parent.append(this.canvas);
         this.resize();
         this.settings();
