@@ -4,7 +4,7 @@ export class Circle extends Gravity
 {
     private free = false;
     public shouldFusion: boolean|Circle = false;
-    constructor(public size:number,gravity:number|undefined = undefined)
+    constructor(public size:number,public color:string, gravity:number|undefined = undefined)
     {
         super(gravity);
     }
@@ -14,24 +14,27 @@ export class Circle extends Gravity
      */
     public drawCircle(ctx:CanvasRenderingContext2D)
     {
+        ctx.save();
+        ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
         ctx.closePath();
         ctx.fill();
+        ctx.restore();
     }
     /**
-     * Déplace le cercle à droite
+     * Déplace le cercle sur l'axe X
+     * @param speed vitesse horizontal
+     * @param maxPos position à ne pas dépasser.
      */
-    public moveRight()
+    public moveX(speed: number, maxPos:number)
     {
-        this.x += 5;
-    }
-    /**
-     * Déplace le cercle à gauche
-     */
-    public moveLeft()
-    {
-        this.x -= 5;
+        this.x += speed;   
+        console.log(speed, maxPos, this.x);
+        if(speed <= 0 && this.x < maxPos)
+            this.x = maxPos;
+        if (speed >= 0 && this.x > maxPos)
+            this.x = maxPos;
     }
     /**
      * Débloque la balle

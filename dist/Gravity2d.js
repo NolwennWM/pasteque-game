@@ -21,7 +21,10 @@ export class Gravity extends Collision {
         }
         this.gSpeed += this.g;
         this.y += this.gSpeed;
-        if (this.y > this.fallLimit)
+        // console.log(this.y, this.fallLimit);
+        if (this.y > this.fallLimit) {
             this.y = this.fallLimit;
+            this.colliding = true;
+        }
     }
 }

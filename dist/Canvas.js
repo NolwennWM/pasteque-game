@@ -28,4 +28,19 @@ export class Canvas extends Settings {
     settings() {
         this.ctx.fillStyle = "black";
     }
+    drawLine(x1, y1, x2, y2) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(x1, y2);
+        this.ctx.lineTo(x2, y2);
+        this.ctx.closePath();
+        this.ctx.stroke();
+    }
+    text(text, x = this.canvas.width / 2, y = this.canvas.height / 2, align = "center", font = "40px serif") {
+        this.ctx.textAlign = align;
+        this.ctx.font = font;
+        this.ctx.strokeStyle = "black";
+        this.ctx.fillStyle = "red";
+        this.ctx.fillText(text, x, y);
+        this.ctx.strokeText(text, x, y);
+    }
 }

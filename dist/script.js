@@ -1,12 +1,13 @@
 import { Canvas } from "./Canvas.js";
 import { Circle } from "./Circle.js";
 class pasteque extends Canvas {
-    current = new Circle(0);
+    current;
     circleList = [];
     lastLaunch = Date.now();
     start = false;
     constructor() {
-        super();
+        super(document.querySelector(".gameZone"));
+        this.current = this.createCircle(0);
         this.gameSettings();
         this.selectCircle();
         this.updateDraw();
@@ -18,11 +19,18 @@ class pasteque extends Canvas {
      */
     gameSettings() {
         this.cursorPos.x = this.canvas.width / 2;
+        this.cursorPos.y = this.circleSizes[this.maxSize].size;
         this.setStartPosition();
         window.addEventListener("keydown", this.onKeyDown.bind(this));
         window.addEventListener("keyup", this.onKeyUp.bind(this));
         this.updateDraw = this.updateDraw.bind(this);
         this.updateGame = this.updateGame.bind(this);
+    }
+    restart() {
+        this.circleList = [];
+        this.lastLaunch = Date.now();
+        this.selectCircle();
+        this.start = true;
     }
     /**
      * Positionne les nouveaux cercles au niveau du curseur
@@ -40,7 +48,7 @@ class pasteque extends Canvas {
             this.cursorPos.x = this.current.x;
         }
         const size = Math.floor(Math.random() * this.maxSize);
-        this.current = this.createCircle(this.circleSizes[size]);
+        this.current = this.createCircle(size);
         this.setStartPosition();
     }
     /**
@@ -49,8 +57,11 @@ class pasteque extends Canvas {
      * @returns le nouveau cercle
      */
     createCircle(size) {
-        const circle = new Circle(size);
-        circle.setFallLimit = this.canvas.height - this.current.size;
+        const type = this.circleSizes[size];
+        const circle = new Circle(type.size, type.color);
+        circle.setFallLimit = this.canvas.height - type.size;
+        this.maxLeftPos = type.size;
+        this.maxRightPos = this.canvas.width - type.size;
         return circle;
     }
     /**
@@ -60,10 +71,10 @@ class pasteque extends Canvas {
     onKeyDown(e) {
         switch (e.key) {
             case "ArrowLeft":
-                this.current.moveLeft();
+                this.current.moveX(-this.cursorSpeed, this.maxLeftPos);
                 break;
             case "ArrowRight":
-                this.current.moveRight();
+                this.current.moveX(this.cursorSpeed, this.maxRightPos);
                 break;
         }
         this.updateDraw();
@@ -75,7 +86,10 @@ class pasteque extends Canvas {
     onKeyUp(e) {
         switch (e.key) {
             case "Enter":
-                this.nextCircle();
+                if (this.start)
+                    this.nextCircle();
+                else
+                    this.restart();
                 break;
         }
         this.updateDraw();
@@ -86,7 +100,7 @@ class pasteque extends Canvas {
      */
     nextCircle() {
         const now = Date.now();
-        if (now - this.lastLaunch <= this.timeBetweenLaunch)
+        if (!this.current.colliding && now - this.lastLaunch <= this.timeBetweenLaunch)
             return;
         this.lastLaunch = now;
         this.current.launch();
@@ -96,6 +110,12 @@ class pasteque extends Canvas {
      * Met à jour les données du jeu 60 fois par seconde.
      */
     updateGame() {
+        if (this.start) {
+            this.checkCollision();
+        }
+        setTimeout(this.updateGame, 1000 / 60);
+    }
+    checkCollision() {
         this.circleList.forEach((c1, i1) => {
             this.circleList.forEach((c2, i2) => {
                 if (c1 === c2)
@@ -106,8 +126,9 @@ class pasteque extends Canvas {
                 this.fusion(c1, c2);
             });
             c1.updatePos();
+            if (c1.colliding && c1.y < this.cursorPos.y * 2)
+                this.start = false;
         });
-        setTimeout(this.updateGame, 1000 / 60);
     }
     /**
      * Dessine et anime le jeu.
@@ -116,6 +137,10 @@ class pasteque extends Canvas {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.current.drawCircle(this.ctx);
         this.circleList.forEach(c => c.drawCircle(this.ctx));
+        this.drawLine(0, this.cursorPos.y * 2, this.canvas.width, this.cursorPos.y * 2);
+        if (!this.start) {
+            this.text("Vous avez perdu");
+        }
         requestAnimationFrame(this.updateDraw);
     }
     /**
@@ -129,10 +154,11 @@ class pasteque extends Canvas {
         this.circleList.splice(i1, 1)[0];
         const i2 = this.circleList.indexOf(c2);
         this.circleList.splice(i2, 1)[0];
-        const ns = this.circleSizes.indexOf(c1.size) + 1;
+        const ns = this.circleSizes.findIndex(c => c.size === c1.size) + 1;
+        console.log(ns);
         if (ns === this.circleSizes.length)
             return;
-        const nc = this.createCircle(this.circleSizes[ns]);
+        const nc = this.createCircle(ns);
         nc.x = (c1.x + c2.x) / 2;
         nc.y = (c1.y + c2.y) / 2;
         this.circleList.push(nc);

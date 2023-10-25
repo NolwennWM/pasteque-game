@@ -32,4 +32,21 @@ export abstract class Canvas extends Settings
     {
         this.ctx.fillStyle = "black";
     }
+    protected drawLine(x1: number, y1: number, x2: number, y2: number)
+    {
+        this.ctx.beginPath();
+        this.ctx.moveTo(x1, y2);
+        this.ctx.lineTo(x2, y2);
+        this.ctx.closePath();
+        this.ctx.stroke();
+    }
+    protected text(text: string, x:number = this.canvas.width/2, y: number = this.canvas.height/2, align: CanvasTextAlign = "center", font:string = "40px serif")
+    {
+        this.ctx.textAlign = align;
+        this.ctx.font = font;
+        this.ctx.strokeStyle = "black"
+        this.ctx.fillStyle = "red"
+        this.ctx.fillText(text,x,y);
+        this.ctx.strokeText(text,x,y);
+    }
 }

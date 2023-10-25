@@ -3,7 +3,7 @@ import { Element } from "./Element.js";
 
 export abstract class Collision extends Element
 {
-    protected colliding: boolean = false;
+    public colliding: boolean = false;
     constructor()
     {
         super();
@@ -31,8 +31,10 @@ export abstract class Collision extends Element
      */
     private collisionCircle(obj1: Circle, obj2: Circle): boolean
     {
-        const distance = Math.sqrt((obj1.x-obj2.x)**2+(obj1.y-obj2.y)**2);
-        // console.log(distance, obj1.size + obj2.size, distance < obj1.size + obj2.size);
-        return distance < obj1.size + obj2.size;
+        // const distance = Math.sqrt((obj1.x-obj2.x)**2+(obj1.y-obj2.y)**2);
+        // return distance < obj1.size + obj2.size;
+        // This one seems faster :
+        const distance = (obj1.x-obj2.x)*(obj1.x-obj2.x)+(obj1.y-obj2.y)*(obj1.y-obj2.y);
+        return distance < (obj1.size + obj2.size)*(obj1.size + obj2.size)
     }
 }

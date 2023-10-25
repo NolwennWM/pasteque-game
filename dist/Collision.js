@@ -26,8 +26,10 @@ export class Collision extends Element {
      * @returns boolean indiquant si les deux éléments sont en collision
      */
     collisionCircle(obj1, obj2) {
-        const distance = Math.sqrt((obj1.x - obj2.x) ** 2 + (obj1.y - obj2.y) ** 2);
-        // console.log(distance, obj1.size + obj2.size, distance < obj1.size + obj2.size);
-        return distance < obj1.size + obj2.size;
+        // const distance = Math.sqrt((obj1.x-obj2.x)**2+(obj1.y-obj2.y)**2);
+        // return distance < obj1.size + obj2.size;
+        // This one seems faster :
+        const distance = (obj1.x - obj2.x) * (obj1.x - obj2.x) + (obj1.y - obj2.y) * (obj1.y - obj2.y);
+        return distance < (obj1.size + obj2.size) * (obj1.size + obj2.size);
     }
 }
