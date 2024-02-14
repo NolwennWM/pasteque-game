@@ -85,7 +85,7 @@ class pasteque extends Canvas {
      */
     onKeyUp(e) {
         switch (e.key) {
-            case "Enter":
+            case "ArrowDown":
                 if (this.start)
                     this.nextCircle();
                 else
@@ -116,8 +116,8 @@ class pasteque extends Canvas {
         setTimeout(this.updateGame, 1000 / 60);
     }
     checkCollision() {
-        this.circleList.forEach((c1, i1) => {
-            this.circleList.forEach((c2, i2) => {
+        this.circleList.forEach((c1) => {
+            this.circleList.forEach((c2) => {
                 if (c1 === c2)
                     return;
                 const col = c1.collision(c2);
